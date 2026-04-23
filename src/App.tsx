@@ -361,15 +361,9 @@ export default function App() {
 
   return (
     <div className={`multiple-scenes view-control-buttons ${sceneListEnabled ? 'scene-list-enabled' : ''} ${autorotate ? 'autorotate-enabled' : ''} ${fullscreen ? 'fullscreen-active' : ''}`}>
-      {/* Top right language & features toggle */}
-      <div className="absolute top-4 right-4 z-50 flex gap-2">
-        <button 
-          onClick={toggleGyro}
-          className="bg-white/80 backdrop-blur px-3 py-1.5 rounded-md shadow text-sm font-medium hover:bg-white transition-colors flex items-center gap-2"
-        >
-          {gyroEnabled ? (lang === 'fr' ? 'Désactiver boussole' : 'Disable compass') : (lang === 'fr' ? 'Activer boussole' : 'Enable compass')}
-        </button>
-        <div className="bg-white/80 backdrop-blur flex rounded-md shadow overflow-hidden text-sm font-medium">
+      {/* Right side language toggle - moved down to stay below top controls */}
+      <div className="absolute top-[60px] md:top-[70px] right-2 z-50 flex gap-2">
+        <div className="bg-white/80 backdrop-blur flex rounded-md shadow-md overflow-hidden text-sm font-medium border border-black/5">
           <button 
             className={`px-3 py-1.5 transition-colors ${lang === 'fr' ? 'bg-black text-white' : 'hover:bg-white/50'}`}
             onClick={() => setLang('fr')}
@@ -440,6 +434,16 @@ export default function App() {
       <a href="#" id="viewOut" className="viewControlButton viewControlButton-6" onClick={e => e.preventDefault()}>
         <img className="icon" src="/img/minus.png" alt="Zoom out" />
       </a>
+
+      {/* Gyroscope/Compass Toggle */}
+      <button 
+        onClick={toggleGyro}
+        className={`absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 md:w-12 md:h-12 rounded-full shadow flex items-center justify-center text-3xl md:text-2xl transition-all duration-300 active:scale-95 border border-black/5 ${gyroEnabled ? 'bg-blue-500 shadow-blue-500/40 md:hover:scale-105 md:hover:bg-blue-600' : 'bg-white/90 backdrop-blur md:hover:bg-white text-gray-800 md:hover:scale-105 hover:shadow-lg'}`}
+        title={gyroEnabled ? (lang === 'fr' ? 'Désactiver boussole' : 'Disable compass') : (lang === 'fr' ? 'Activer boussole' : 'Enable compass')}
+        style={{ WebkitTapHighlightColor: 'transparent' }}
+      >
+        {gyroEnabled ? <span style={{filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'}}>🧭</span> : <span className="opacity-90">🧭</span>}
+      </button>
     </div>
   );
 }
