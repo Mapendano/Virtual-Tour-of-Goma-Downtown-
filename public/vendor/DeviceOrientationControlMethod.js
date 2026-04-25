@@ -35,8 +35,30 @@ window.DeviceOrientationControlMethod = function() {
   this._getPitchCallbacks = [];
 }
 
-window.Marzipano.dependencies.eventEmitter(window.DeviceOrientationControlMethod);
-
+// Minimal event emitter polyfill
+Object.assign(window.DeviceOrientationControlMethod.prototype, {
+  _handlers: null,
+  addEventListener: function(type, listener) {
+    if (!this._handlers) this._handlers = {};
+    if (!this._handlers[type]) this._handlers[type] = [];
+    this._handlers[type].push(listener);
+  },
+  removeEventListener: function(type, listener) {
+    if (!this._handlers || !this._handlers[type]) return;
+    var idx = this._handlers[type].indexOf(listener);
+    if (idx > -1) this._handlers[type].splice(idx, 1);
+  },
+  emit: function(type) {
+    if (!this._handlers || !this._handlers[type]) return;
+    var args = Array.prototype.slice.call(arguments, 1);
+    var handlers = this._handlers[type].slice();
+    for (var i = 0; i < handlers.length; i++) {
+      handlers[i].apply(this, args);
+    }
+  }
+});
+window.DeviceOrientationControlMethod.prototype.on = window.DeviceOrientationControlMethod.prototype.addEventListener;
+window.DeviceOrientationControlMethod.prototype.removeListener = window.DeviceOrientationControlMethod.prototype.removeEventListener;
 
 window.DeviceOrientationControlMethod.prototype.destroy = function() {
   this._dynamics = null;
